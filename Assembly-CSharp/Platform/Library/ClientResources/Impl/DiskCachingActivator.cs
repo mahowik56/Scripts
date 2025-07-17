@@ -9,20 +9,12 @@ namespace Platform.Library.ClientResources.Impl
 {
 	public class DiskCachingActivator : UnityAwareActivator<AutoCompleting>
 	{
-		[Inject]
-		public static ConfigurationService ConfigurationService { get; set; }
-
-		protected override void Activate()
-		{
-			YamlNode config = ConfigurationService.GetConfig(ConfigPath.CLIENT_RESOURCES);
-			string stringValue = config.GetStringValue("caching");
-			string stringValue2 = config.GetStringValue("maximumAvailableDiskSpace");
-			string stringValue3 = config.GetStringValue("expirationDelay");
-			string stringValue4 = config.GetStringValue("compressionEnabled");
-			DiskCaching.Enabled = Convert.ToBoolean(stringValue);
-			DiskCaching.MaximumAvailableDiskSpace = Convert.ToInt64(stringValue2);
-			DiskCaching.ExpirationDelay = Convert.ToInt32(stringValue3);
-			DiskCaching.CompressionEnambled = Convert.ToBoolean(stringValue4);
-		}
+                protected override void Activate()
+                {
+                        DiskCaching.Enabled = true;
+                        DiskCaching.MaximumAvailableDiskSpace = 2671771648L;
+                        DiskCaching.ExpirationDelay = 5184000;
+                        DiskCaching.CompressionEnambled = false;
+                }
 	}
 }
