@@ -1,0 +1,4 @@
+---
+stateServerHost: 127.0.0.1
+stateServerPort: 8082
+queueUrl:        http://127.0.0.1:8082/queue
