@@ -667,19 +667,23 @@ namespace Tanks.Battle.ClientCore.Impl
 			{
 				return;
 			}
-			HashSet<string>.Enumerator enumerator = activeContexts.GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				string current = enumerator.Current;
-				HashSet<InputAction> hashSet = contextToActions[current];
-				HashSet<InputAction>.Enumerator enumerator2 = hashSet.GetEnumerator();
-				while (enumerator2.MoveNext())
-				{
-					InputAction current2 = enumerator2.Current;
-					UpdateKeysInActiveContext(current2);
-					UpdateAxisInActiveContext(current2);
-				}
-			}
+                        HashSet<string>.Enumerator enumerator = activeContexts.GetEnumerator();
+                        while (enumerator.MoveNext())
+                        {
+                                string current = enumerator.Current;
+                                HashSet<InputAction> hashSet;
+                                if (!contextToActions.TryGetValue(current, out hashSet))
+                                {
+                                        continue;
+                                }
+                                HashSet<InputAction>.Enumerator enumerator2 = hashSet.GetEnumerator();
+                                while (enumerator2.MoveNext())
+                                {
+                                        InputAction current2 = enumerator2.Current;
+                                        UpdateKeysInActiveContext(current2);
+                                        UpdateAxisInActiveContext(current2);
+                                }
+                        }
 			if (pendingActions.Count <= 0)
 			{
 				return;
