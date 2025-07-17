@@ -14,104 +14,36 @@ namespace Platform.Library.ClientResources.Impl
 {
 	public class InitConfigurationActivator : UnityAwareActivator<ManuallyCompleting>
 	{
-		private WWWLoader wwwLoader;
+                [Inject]
+                public static YamlService yamlService { get; set; }
 
-		[Inject]
-		public static YamlService yamlService { get; set; }
+                [Inject]
+                public new static EngineService EngineService { get; set; }
 
-		[Inject]
-		public new static EngineService EngineService { get; set; }
+                public static bool LauncherPassed { get; set; }
 
-		public static bool LauncherPassed { get; set; }
+                protected override void Activate()
+                {
+                        if (LauncherPassed)
+                        {
+                                Complete();
+                                return;
+                        }
 
-		protected override void Activate()
-		{
-			if (LauncherPassed)
-			{
-				Complete();
-				return;
-			}
-			wwwLoader = new WWWLoader(new WWW(getInitUrl()));
-			wwwLoader.MaxRestartAttempts = 0;
-		}
+                        InitConfiguration.Config = new InitConfiguration
+                        {
+                                Host = "*ip*",
+                                AcceptorPort = "5050",
+                                ConfigVersion = "master-48606",
+                                BundleDbVersion = "master-48606",
+                                ResourcesUrl = "http://*ip*:8080/resources",
+                                ConfigsUrl = "http://*ip*:8080/config",
+                                UpdateConfigUrl = "http://*ip*:8080/update/{BuildTarget}.yml",
+                                StateFileUrl = "http://*ip*:8080/state/_state.yml"
+                        };
 
-		private string getInitUrl()
-		{
-			CommandLineParser commandLineParser = new CommandLineParser(Environment.GetCommandLineArgs());
-			string paramValue;
-			string text = ((!commandLineParser.TryGetValue(LauncherConstants.TEST_SERVER, out paramValue)) ? StartupConfiguration.Config.InitUrl : ("http://" + paramValue + ".test.tankix.com/config/init.yml"));
-			return text + "?rnd=" + new global::System.Random().NextDouble();
-		}
+                        Complete();
+                }
 
-		private void Update()
-		{
-			if (wwwLoader == null || !wwwLoader.IsDone)
-			{
-				return;
-			}
-			if (!string.IsNullOrEmpty(wwwLoader.Error))
-			{
-				int responseCode = WWWLoader.GetResponseCode(wwwLoader.WWW);
-				if (responseCode >= 400)
-				{
-					HandleError<TechnicalWorkEvent>();
-				}
-				else
-				{
-					HandleError<NoServerConnectionEvent>(string.Format("Initial config loading was failed. URL: {0}, Error: {1}", wwwLoader.URL, wwwLoader.Error));
-				}
-				return;
-			}
-			if (wwwLoader.Bytes == null || wwwLoader.Bytes.Length == 0)
-			{
-				HandleError<GameDataLoadErrorEvent>("Initial config is empty. URL: " + wwwLoader.URL);
-				return;
-			}
-			try
-			{
-				using (MemoryStream stream = new MemoryStream(wwwLoader.Bytes))
-				{
-					StreamReader reader = new StreamReader(stream);
-					InitConfiguration config = yamlService.Load<InitConfiguration>(reader);
-					InitConfiguration.Config = config;
-				}
-			}
-			catch (Exception ex)
-			{
-				HandleError<GameDataLoadErrorEvent>(string.Format("Invalid initial config. URL: {0}, Error: {1}", wwwLoader.URL, ex.Message), ex);
-				return;
-			}
-			DisposeWWWLoader();
-			Complete();
-		}
-
-		private void HandleError<T>(string errorMessage) where T : Platform.Kernel.ECS.ClientEntitySystem.API.Event, new()
-		{
-			LoggerProvider.GetLogger(this).Error(errorMessage);
-			HandleError<T>();
-		}
-
-		private void HandleError<T>(string errorMessage, Exception e) where T : Platform.Kernel.ECS.ClientEntitySystem.API.Event, new()
-		{
-			LoggerProvider.GetLogger(this).Error(errorMessage, e);
-			HandleError<T>();
-		}
-
-		private void HandleError<T>() where T : Platform.Kernel.ECS.ClientEntitySystem.API.Event, new()
-		{
-			DisposeWWWLoader();
-			Engine engine = EngineService.Engine;
-			Entity entity = engine.CreateEntity("InitConfigLoading");
-			engine.ScheduleEvent<T>(entity);
-		}
-
-		private void DisposeWWWLoader()
-		{
-			if (wwwLoader != null)
-			{
-				wwwLoader.Dispose();
-				wwwLoader = null;
-			}
-		}
 	}
 }

@@ -26,13 +26,8 @@ namespace Platform.Library.ClientResources.Impl
 
 			public BaseUrlComponent baseUrl;
 
-			public AssetBundleDiskCacheComponent assetBundleDiskCache;
-		}
-
-		private const string ASSET_PRIORITY_CONFIG = "clientlocal/clientresources/assetpriority";
-
-		[Inject]
-		public new static ConfigurationService ConfigurationService { get; set; }
+                        public AssetBundleDiskCacheComponent assetBundleDiskCache;
+                }
 
 		[OnEventFire]
 		public void StartPreload(NodeAddedEvent e, SingleNode<PreloadAllResourcesComponent> preload, [JoinAll] DataBaseNode db)
@@ -104,11 +99,47 @@ namespace Platform.Library.ClientResources.Impl
 			entity.AddComponent(component);
 		}
 
-		private static List<string> GetPrioritizedAssetsConfigPathList()
-		{
-			YamlNode config = ConfigurationService.GetConfig("clientlocal/clientresources/assetpriority");
-			ConfigPathCollectionComponent configPathCollectionComponent = config.GetChildNode("configPathCollection").ConvertTo<ConfigPathCollectionComponent>();
-			return configPathCollectionComponent.Collection;
-		}
+                private static List<string> GetPrioritizedAssetsConfigPathList()
+                {
+                        return new List<string>
+                        {
+                                "garage/skin/weapon/flamethrower/m0",
+                                "garage/skin/weapon/freeze/m0",
+                                "garage/skin/weapon/hammer/m0",
+                                "garage/skin/weapon/isis/m0",
+                                "garage/skin/weapon/railgun/m0",
+                                "garage/skin/weapon/ricochet/m0",
+                                "garage/skin/weapon/shaft/m0",
+                                "garage/skin/weapon/thunder/m0",
+                                "garage/skin/weapon/smoky/m0",
+                                "garage/skin/weapon/twins/m0",
+                                "garage/skin/weapon/vulcan/m0",
+                                "garage/skin/tank/dictator/m0",
+                                "garage/skin/tank/hornet/m0",
+                                "garage/skin/tank/hunter/m0",
+                                "garage/skin/tank/mammoth/m0",
+                                "garage/skin/tank/titan/m0",
+                                "garage/skin/tank/viking/m0",
+                                "garage/skin/tank/wasp/m0",
+                                "garage/skin/weapon/flamethrower/m1",
+                                "garage/skin/weapon/freeze/m1",
+                                "garage/skin/weapon/hammer/m1",
+                                "garage/skin/weapon/isis/m1",
+                                "garage/skin/weapon/railgun/m1",
+                                "garage/skin/weapon/ricochet/m1",
+                                "garage/skin/weapon/shaft/m1",
+                                "garage/skin/weapon/thunder/m1",
+                                "garage/skin/weapon/smoky/m1",
+                                "garage/skin/weapon/twins/m1",
+                                "garage/skin/weapon/vulcan/m1",
+                                "garage/skin/tank/dictator/m1",
+                                "garage/skin/tank/hornet/m1",
+                                "garage/skin/tank/hunter/m1",
+                                "garage/skin/tank/mammoth/m1",
+                                "garage/skin/tank/titan/m1",
+                                "garage/skin/tank/viking/m1",
+                                "garage/skin/tank/wasp/m1"
+                        };
+                }
 	}
 }

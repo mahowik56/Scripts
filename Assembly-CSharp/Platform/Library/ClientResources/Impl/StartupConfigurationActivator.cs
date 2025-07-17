@@ -12,27 +12,20 @@ namespace Platform.Library.ClientResources.Impl
 {
 	public class StartupConfigurationActivator : UnityAwareActivator<AutoCompleting>
 	{
-		[Inject]
-		public static YamlService YamlService { get; set; }
+                [Inject]
+                public new static EngineService EngineService { get; set; }
 
-		[Inject]
-		public static ConfigurationService ConfigurationService { get; set; }
+                protected override void Activate()
+                {
+                        StartupConfiguration.Config = new StartupConfiguration
+                        {
+                                InitUrl = "http://127.0.0.1:8080/config/init.yml",
+                                StateUrl = "http://127.0.0.1:8080/state/tankixprod_state.yml",
+                                CurrentClientVersion = "master-48606"
+                        };
 
-		[Inject]
-		public new static EngineService EngineService { get; set; }
-
-		protected override void Activate()
-		{
-             //Debug.Log("[StartupCfg] Activate");
-            try
-			{
-				StartupConfiguration.Config = ConfigurationService.GetConfig(ConfigPath.STARTUP).ConvertTo<StartupConfiguration>();
-			}
-			catch (Exception ex)
-			{
-				HandleError<InvalidLocalConfigurationErrorEvent>(string.Format("Invalid local configuration. Error: {0}", ex.Message), ex);
-			}
-		}
+                        Complete();
+                }
 
 		private void HandleError<T>(string errorMessage, Exception e) where T : Event, new()
 		{
