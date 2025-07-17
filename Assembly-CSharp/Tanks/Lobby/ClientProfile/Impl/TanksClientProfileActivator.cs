@@ -3,6 +3,7 @@ using Platform.Kernel.OSGi.ClientCore.API;
 using Platform.Library.ClientUnityIntegration;
 using Platform.Library.ClientUnityIntegration.API;
 using Tanks.Lobby.ClientProfile.API;
+using Tanks.Lobby.ClientSettings.API;
 
 namespace Tanks.Lobby.ClientProfile.Impl
 {
@@ -23,8 +24,9 @@ namespace Tanks.Lobby.ClientProfile.Impl
 			ECSBehaviour.EngineService.RegisterSystem(new LaserSightSettingsSystem());
 			ECSBehaviour.EngineService.RegisterSystem(new UserXCrystalsIndicatorSystem());
 			ECSBehaviour.EngineService.RegisterSystem(new MouseSettingsSystem());
-			ECSBehaviour.EngineService.RegisterSystem(new CBQAchievementSystem());
-			TemplateRegistry.RegisterPart<TanksSettingsTemplatePart>();
+                        ECSBehaviour.EngineService.RegisterSystem(new CBQAchievementSystem());
+                        TemplateRegistry.Register<SettingsTemplate>();
+                        TemplateRegistry.RegisterPart<TanksSettingsTemplatePart>();
 			TemplateRegistry.RegisterPart<MouseSettingsTemplatePart>();
 			TemplateRegistry.RegisterPart<GameCameraShakerSettingsTemplatePart>();
 			TemplateRegistry.RegisterPart<TargetFocusSettingsTemplatePart>();
