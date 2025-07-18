@@ -31,11 +31,8 @@ namespace Tanks.ClientLauncher.Impl
 
 		private string executable;
 
-		[Inject]
-		public static ConfigurationService ConfigurationService { get; set; }
-
-		[Inject]
-		public static EngineServiceInternal EngineService { get; set; }
+                [Inject]
+                public static EngineServiceInternal EngineService { get; set; }
 
 		private void Awake()
 		{
@@ -89,16 +86,16 @@ namespace Tanks.ClientLauncher.Impl
 			return text != text2;
 		}
 
-		private void ReadConfigs()
-		{
-			currentVersion = ConfigurationService.GetConfig(ConfigPath.STARTUP).GetStringValue("currentClientVersion");
-			remoteVersion = UpdateConfiguration.Config.LastClientVersion;
-			distributionUrl = UpdateConfiguration.Config.DistributionUrl;
-			executable = UpdateConfiguration.Config.Executable;
-            Debug.Log("[Launcher] current=" + currentVersion +
-              " remote=" + remoteVersion +
-              " url=" + distributionUrl);
-        }
+                private void ReadConfigs()
+                {
+                        currentVersion = StartupConfiguration.Config.CurrentClientVersion;
+                        remoteVersion = UpdateConfiguration.Config.LastClientVersion;
+                        distributionUrl = UpdateConfiguration.Config.DistributionUrl;
+                        executable = UpdateConfiguration.Config.Executable;
+                        Debug.Log("[Launcher] current=" + currentVersion +
+                          " remote=" + remoteVersion +
+                          " url=" + distributionUrl);
+                }
 
 		private bool CheckUpdateReport()
 		{

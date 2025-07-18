@@ -16,62 +16,23 @@ namespace Platform.Library.ClientResources.Impl
 {
 	public class LocalConfigurationActivator : UnityAwareActivator<ManuallyCompleting>
 	{
-		private WWWLoader wwwLoader;
+                [Inject]
+                public static ConfigurationService ConfigurationService { get; set; }
 
-		private ConfigurationProfileImpl configurationProfile;
+                [Inject]
+                public new static EngineService EngineService { get; set; }
 
-		[Inject]
-		public static ConfigurationService ConfigurationService { get; set; }
+                protected override void Activate()
+                {
+                        LocalConfiguration.rootConfigNode = new ConfigTreeNodeImpl(string.Empty);
+                        SetLoadingStopTimeout();
+                        Complete();
+                }
 
-		[Inject]
-		public new static EngineService EngineService { get; set; }
-
-		protected override void Activate()
-		{
-            LoadConfigs();
-		}
-
-		private void LoadConfigs()
-		{
-			string text = Application.dataPath + "/" + ConfigPath.CONFIG;
-			if (!Directory.Exists(text))
-			{
-				HandleError(string.Format("Local configuration folder '{0}' was not found", text));
-				return;
-			}
-			try
-			{
-				FileSystemConfigsImporter fileSystemConfigsImporter = new FileSystemConfigsImporter();
-				configurationProfile = new ConfigurationProfileImpl();
-				ConfigTreeNodeImpl rootConfigNode = fileSystemConfigsImporter.Import<ConfigTreeNodeImpl>(text, configurationProfile);
-				((ConfigurationServiceImpl)ConfigurationService).SetRootConfigNode(rootConfigNode);
-				configurationProfile = new ConfigurationProfileImpl(GetProfiles());
-				rootConfigNode = fileSystemConfigsImporter.Import<ConfigTreeNodeImpl>(text, configurationProfile);
-				((ConfigurationServiceImpl)ConfigurationService).SetRootConfigNode(rootConfigNode);
-				LocalConfiguration.rootConfigNode = rootConfigNode;
-				SetLoadingStopTimeout();
-				Complete();
-			}
-			catch (Exception ex)
-			{
-				HandleError(string.Format("Invalid local configuration data. Path: {0}, Error: {1}", text, ex.Message), ex);
-			}
-
-
-		}
-
-		private void SetLoadingStopTimeout()
-		{
-			try
-			{
-				YamlNode config = ConfigurationService.GetConfig(ConfigPath.LOADING_STOP_TIMEOUT);
-				WWWLoader.DEFAULT_TIMEOUT_SECONDS = int.Parse(config.GetStringValue("timeoutInSec"));
-			}
-			catch (Exception ex)
-			{
-				LoggerProvider.GetLogger(this).Error(ex.Message, ex);
-			}
-		}
+                private void SetLoadingStopTimeout()
+                {
+                        WWWLoader.DEFAULT_TIMEOUT_SECONDS = 60;
+                }
 
 		private void HandleError(string errorMessage)
 		{
