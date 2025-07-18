@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public static class GenerateAssetBundleDB
 {
+#if UNITY_EDITOR
     [MenuItem("Tools/Generate AssetBundle DB")]
     public static void Generate()
     {
@@ -50,6 +53,7 @@ public static class GenerateAssetBundleDB
         File.WriteAllText(Path.Combine(outputPath, "db.json"), json);
         UnityEngine.Debug.Log("db.json generated at " + Path.Combine(outputPath, "db.json"));
     }
+#endif
 
     [Serializable]
     class Db
