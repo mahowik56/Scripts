@@ -53,6 +53,11 @@ public static class GenerateAssetBundleDB
         File.WriteAllText(Path.Combine(outputPath, "db.json"), json);
         UnityEngine.Debug.Log("db.json generated at " + Path.Combine(outputPath, "db.json"));
     }
+#else
+    public static void Generate()
+    {
+        UnityEngine.Debug.LogError("GenerateAssetBundleDB can only run inside the Unity Editor.");
+    }
 #endif
 
     [Serializable]
