@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEditor;
 using UnityEngine;
 
 public static class GenerateAssetBundleDB
 {
+#if UNITY_EDITOR
     [MenuItem("Tools/Generate AssetBundle DB")]
     public static void Generate()
     {
@@ -16,6 +20,7 @@ public static class GenerateAssetBundleDB
             EditorUserBuildSettings.activeBuildTarget);
         if (manifest == null)
         {
+            UnityEngine.Debug.LogError("Failed to build asset bundles");
             Debug.LogError("Failed to build asset bundles");
             return;
         }
@@ -27,6 +32,7 @@ public static class GenerateAssetBundleDB
             info.bundleName = bundle;
             info.hash = manifest.GetAssetBundleHash(bundle).ToString();
             uint crc;
+            BuildPipeline.GetCRCForAssetBundle(Path.Combine(outputPath, bundle), out crc);
             BuildPipeline.GetCRC(Path.Combine(outputPath, bundle), out crc);
             info.crc = crc;
             info.cacheCrc = crc;
@@ -48,6 +54,14 @@ public static class GenerateAssetBundleDB
 
         string json = JsonUtility.ToJson(db, true);
         File.WriteAllText(Path.Combine(outputPath, "db.json"), json);
+        UnityEngine.Debug.Log("db.json generated at " + Path.Combine(outputPath, "db.json"));
+    }
+#else
+    public static void Generate()
+    {
+        UnityEngine.Debug.LogError("GenerateAssetBundleDB can only run inside the Unity Editor.");
+    }
+#endif
         Debug.Log("db.json generated at " + Path.Combine(outputPath, "db.json"));
     }
 
