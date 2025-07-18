@@ -4,6 +4,7 @@ using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using UnityEditor;
 using UnityEngine;
 
 public static class GenerateAssetBundleDB
@@ -20,6 +21,7 @@ public static class GenerateAssetBundleDB
         if (manifest == null)
         {
             UnityEngine.Debug.LogError("Failed to build asset bundles");
+            Debug.LogError("Failed to build asset bundles");
             return;
         }
 
@@ -31,6 +33,7 @@ public static class GenerateAssetBundleDB
             info.hash = manifest.GetAssetBundleHash(bundle).ToString();
             uint crc;
             BuildPipeline.GetCRCForAssetBundle(Path.Combine(outputPath, bundle), out crc);
+            BuildPipeline.GetCRC(Path.Combine(outputPath, bundle), out crc);
             info.crc = crc;
             info.cacheCrc = crc;
             info.size = new FileInfo(Path.Combine(outputPath, bundle)).Length;
@@ -59,6 +62,8 @@ public static class GenerateAssetBundleDB
         UnityEngine.Debug.LogError("GenerateAssetBundleDB can only run inside the Unity Editor.");
     }
 #endif
+        Debug.Log("db.json generated at " + Path.Combine(outputPath, "db.json"));
+    }
 
     [Serializable]
     class Db
