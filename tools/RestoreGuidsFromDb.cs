@@ -12,6 +12,10 @@ public static class RestoreGuidsFromDb
     [MenuItem("Tools/Restore GUIDs From DB")]
     public static void Restore()
     {
+        string dbPath = Path.Combine(Path.Combine(Application.dataPath, ".."), "db.json");
+        if (!File.Exists(dbPath))
+        {
+            Debug.LogError("db.json not found at " + dbPath);
         string dbPath = Path.Combine(Application.dataPath, "..", "db.json");
         if (!File.Exists(dbPath))
         {
@@ -27,6 +31,7 @@ public static class RestoreGuidsFromDb
                 string metaPath = asset.objectName + ".meta";
                 if (!File.Exists(metaPath))
                 {
+                    Debug.LogWarning("Meta file not found for " + asset.objectName);
                     Debug.LogWarning($"Meta file not found for {asset.objectName}");
                     continue;
                 }
