@@ -4,7 +4,6 @@ using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using UnityEditor;
 using UnityEngine;
 
 public static class GenerateAssetBundleDB
@@ -62,8 +61,6 @@ public static class GenerateAssetBundleDB
         UnityEngine.Debug.LogError("GenerateAssetBundleDB can only run inside the Unity Editor.");
     }
 #endif
-        Debug.Log("db.json generated at " + Path.Combine(outputPath, "db.json"));
-    }
 
     [Serializable]
     class Db
