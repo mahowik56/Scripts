@@ -16,6 +16,10 @@ public static class RestoreGuidsFromDb
         if (!File.Exists(dbPath))
         {
             Debug.LogError("db.json not found at " + dbPath);
+        string dbPath = Path.Combine(Application.dataPath, "..", "db.json");
+        if (!File.Exists(dbPath))
+        {
+            Debug.LogError($"db.json not found at {dbPath}");
             return;
         }
 
@@ -28,6 +32,7 @@ public static class RestoreGuidsFromDb
                 if (!File.Exists(metaPath))
                 {
                     Debug.LogWarning("Meta file not found for " + asset.objectName);
+                    Debug.LogWarning($"Meta file not found for {asset.objectName}");
                     continue;
                 }
 
